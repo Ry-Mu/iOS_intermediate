@@ -7,10 +7,13 @@
 //
 
 import UIKit
+import CoreData
 
 class BucketListViewController: UITableViewController, AddItemTableViewControllerDelegate {
     
-    var items = ["go to the moon", "eat a candy bar", "swim in the amazon", "ride a motor bike in tokyo"]
+    var items = [BucketListItem]()
+    
+    let managedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +35,7 @@ class BucketListViewController: UITableViewController, AddItemTableViewControlle
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ListitemCell", for: indexPath)
-        cell.textLabel?.text = items[indexPath.row]
+        cell.textLabel?.text = items[indexPath.row].text!
         return cell
     }
     
@@ -67,9 +70,20 @@ class BucketListViewController: UITableViewController, AddItemTableViewControlle
             
             let indexPath = sender as! NSIndexPath
             let item = items[indexPath.row]
-            addItemTableViewController.item = item
+            addItemTableViewController.item = item.text!
             addItemTableViewController.indexPath = indexPath
             
+        }
+    }
+    
+    func fetchAllItems () {
+        
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "BucketListItem")
+        do {
+            let result = try managedObjectContext.fetch(request)
+            items = result as! [BucketListItem]
+        } catch {
+            print("\(error)")
         }
     }
     
@@ -82,14 +96,19 @@ class BucketListViewController: UITableViewController, AddItemTableViewControlle
         
         if let ip = indexPath {
             
-            items[ip.row] = text
+            let item = items[ip.row]
+            item.text = text
             
         } else {
+            
+            let item = NSEntityDescription.insertNewObject(forEntityName: "BucketListItem", into: managedObjectContext) as! BucketListItem
+            item.text = text
             items.append(text)
         }
-        items.append(text)
-        tableView.reloadData()
-        dismiss(animated: true, completion: nil)
+            items.append(text)
+            tableView.reloadData()
+            dismiss(animated: true, completion: nil)
     }
+    
 }
 

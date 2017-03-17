@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    let people = ["Charlie", "Sam", "Shah", "Kennedy", "Pat", "Winfred", "Zed", "Sara", "Jeffry", "Abraham", "Anna", "Melinda"]
+    let people = ["Charlie", "Sam", "Shah", "Kennedy", "Pat", "Winfred`", "Zed", "Sara", "Jeffry", "Abraham", "Anna", "Melinda"]
         
 
     override func viewDidLoad() {
